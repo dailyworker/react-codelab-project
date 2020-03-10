@@ -1,11 +1,14 @@
 import WebpackDevserver from 'webpack-dev-server';
 import webpack from 'webpack';
 import express from 'express';
+import session from 'express-session';
 import path from 'path';
 
 const app     = express();
 const port    = 3000;
 const devPort = 4000;
+
+
 
 app.use('/', express.static(path.join(__dirname, './../public')));
 
@@ -16,6 +19,12 @@ app.get('/hello', (req, res) => {
 app.listen(port, () => {
     console.log('Express is listening on port', port);
 })
+
+app.use(session({
+    secret: 'CodeLab1$1$234',
+    resave: false,
+    saveUninitialized: true
+}));
 
 if(process.env.NODE_ENV == 'development'){
     console.log('Server is running on development mode');
