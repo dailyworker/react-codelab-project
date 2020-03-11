@@ -1,5 +1,5 @@
 import express from 'express';
-import Account from '../../models/account';
+import Account from '../models/account';
 const router = express.Router();
 
 
@@ -32,27 +32,27 @@ router.post('/signup', (req, res) => {
     }
 
     // 사용자 계정 존재여부 검사
-    let findRes = await Account.findOne({where : {username : req.body.username}});
-    if(findRes){
-        return res.status(409).json({
-            error: "USERNAME EXISTS",
-            code: 3
-        });    
-    } else {
-        // 새로운 계정 생성
-        let account = new Account({
-            username : req.body.username,
-            password : req.body.password
-        });
-
-        account.password = account.generateHash(account.password);
+    let findRes = Account.findOne({where : {username : req.body.username}})
+                .then(account => {
+                    if(account){
+                        return res.status(409).json({
+                            error: "USERNAME EXISTS",
+                            code: 3
+                        });    
+                    } else {
+                        let account = new Account({
+                            username : req.body.username,
+                            password : req.body.password
+                        });
+                        
+                        // 새로운 계정 생성
+                        account.password = account.generateHash(account.password);
         
-        // 생성된 계정 DB 저장
-        Account.create(account);
-        return res.json({ success : true });
-    }
-
-    res.json({ success : true});
+                        // 생성된 계정 DB 저장
+                        Account.create(account);
+                        return res.json({ success : true });
+                    }
+    });
 });
 
 router.post('/signin', (req, res) => {

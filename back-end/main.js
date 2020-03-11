@@ -14,6 +14,9 @@ const devPort = 4000;
 var sequelize = require('../models').sequelize;
 sequelize.sync();
 
+app.use(morgan('dec'));
+app.use(bodyParser.json());
+app.use('/api', api);
 app.use('/', express.static(path.join(__dirname, './../public')));
 
 app.get('/hello', (req, res) => {
@@ -29,10 +32,6 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
-
-app.use(morgan('dec'));
-app.use(bodyParser.json());
-app.use('/api', api);
 
 
 if(process.env.NODE_ENV == 'development'){
