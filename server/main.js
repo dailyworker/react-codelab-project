@@ -11,6 +11,8 @@ const app     = express();
 const port    = 3000;
 const devPort = 4000;
 
+var sequelize = require('../models').sequelize;
+sequelize.sync();
 
 app.use('/', express.static(path.join(__dirname, './../public')));
 
