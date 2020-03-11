@@ -1,57 +1,28 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const path    = require('path');
 
 module.exports = {
-    
-    entry: [
-        './src/index.js',
-        'webpack-dev-server/clients?http://0.0.0.0:4000',
-        'webpack/hot/only-dev-server'
-    ],
-
+    entry: './src/index.js',
+    mode: 'development',
     output: {
-        path: '/',
-        filename: 'bundle.js'
-    },
-
-    devServer: {
-        hot: true,
+        path: path.resolve(__dirname, 'public'),
         filename: 'bundle.js',
-        publicPath: '/',
-        historyApiFallback: true,
-        contentBase:'./public/',
-        proxy: {
-            "**" : "http://localhost:3000"
-        },
-        stats: {
-            assets: false,
-            colors: true,
-            version: false,
-            hash: false,
-            timings: false,
-            chunks: false,
-            chunkModules: false
-        }
+        publicPath: '/public/'
     },
 
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
-                loader: 'bable',
-                exclude: /node_modules/,
-                query: {
-                    cacheDirecotry: true,
-                    presets: ['es2015', 'react'],
-                    plugins: ["react-hotloader/babel"]
-                }
+                test: /\.(jsx|js)?$/,
+                include: path.join(__dirname),
+                exclude: /(node_modules)|(dist)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                    }                
+                },
             }
         ]
-    },
-
-    plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
-        // NoErrosPlugin은 deprecated되었음.
-        new webpack.NoEmitOnErrorsPlugin()
-    ]
+    }
 };
