@@ -1,13 +1,15 @@
 import WebpackDevserver from 'webpack-dev-server';
 import webpack from 'webpack';
 import express from 'express';
+import morgan  from 'morgan';
+import bodyParser from 'body-parser';
 import session from 'express-session';
+import api  from './routes';
 import path from 'path';
 
 const app     = express();
 const port    = 3000;
 const devPort = 4000;
-
 
 
 app.use('/', express.static(path.join(__dirname, './../public')));
@@ -25,6 +27,11 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
+app.use(morgan('dec'));
+app.use(bodyParser.json());
+app.use('/api', api);
+
 
 if(process.env.NODE_ENV == 'development'){
     console.log('Server is running on development mode');
